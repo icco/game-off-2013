@@ -44,12 +44,10 @@
         .bind('EnterFrame', function () {
           // This is constantly firing, 24/7
         })
-        .onHit('Wall', function () {
-          // Hit a wall.
-          if(!!Crafty.keydown["RIGHT_ARROW"]) this.x -= this._speed;
-          if(!!Crafty.keydown["LEFT_ARROW"]) this.x += this._speed;
-          if(!!Crafty.keydown["UP_ARROW"]) this.y += this._speed;
-          if(!!Crafty.keydown["DOWN_ARROW"]) this.y -= this._speed;
+        .bind('Moved', function(from) {
+          if(this.hit('Wall')){
+            this.attr({x: from.x, y:from.y});
+          }
         });
     </script>
   </body>
