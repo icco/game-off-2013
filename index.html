@@ -45,8 +45,8 @@
           // This is constantly firing, 24/7
         })
         .bind('Moved', function(from) {
-          if(this.hit('Wall')){
-            this.attr({x: from.x, y:from.y});
+          if(this.hit('Wall')) {
+            this.attr({x: from.x, y: from.y});
           }
         });
     </script>
