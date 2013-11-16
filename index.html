@@ -11,15 +11,46 @@
       Crafty.init(800, 600);
       Crafty.background('#444');
 
+      Crafty.c("Keyboard", {
+        isDown: function (key) {
+          if (typeof key === "string") {
+            key = Crafty.keys[key];
+          }
+          return !!Crafty.keydown[key];
+        }
+      });
+
       function gen_map() {
-        Crafty.e("2D, DOM, wall, Solid");
+        // Builds outer walls
+        for (x = 0; x < 800; x++) {
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 0, w: 10, h: 10 }).color('#999');
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 590, w: 10, h: 10 }).color('#999');
+        }
+
+        for (y = 0; y < 600; y++) {
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 0, y: y, w: 10, h: 10 }).color('#999');
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 790, y: y, w: 10, h: 10 }).color('#999');
+        }
       }
 
+      gen_map();
+
       // Dot
-      Crafty.e("2D, DOM, Color, Fourway")
-          .color('#ccff66')
-          .attr({ x: 300, y: 150, w: 10, h: 10 })
-          .fourway(4);
+      Crafty.e("2D, DOM, Color, Fourway, Collision")
+        .color('#ccff66')
+        .attr({ x: 300, y: 150, w: 10, h: 10 })
+        .fourway(4)
+        .collision()
+        .bind('EnterFrame', function () {
+          // This is constantly firing, 24/7
+        })
+        .onHit('Wall', function () {
+          // Hit a wall.
+          if(!!Crafty.keydown["RIGHT_ARROW"]) this.x -= this._speed;
+          if(!!Crafty.keydown["LEFT_ARROW"]) this.x += this._speed;
+          if(!!Crafty.keydown["UP_ARROW"]) this.y += this._speed;
+          if(!!Crafty.keydown["DOWN_ARROW"]) this.y -= this._speed;
+        });
     </script>
   </body>
 </html>
