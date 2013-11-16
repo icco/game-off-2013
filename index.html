@@ -1,8 +1,13 @@
 <html>
   <head>
+    <!-- http://craftyjs.com/getting-started/setup.html -->
+    <title>Karl</title>
   </head>
   <body>
-
-    <script src="http://craftyjs.com/release/0.5.4/crafty-min.js"></script>
+    <div id="game"></div>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/crafty/0.5.4/crafty-min.js"></script>
+    <script>
+      Crafty.init(500,350, document.getElementById('game'));
+    </script>
   </body>
 </html>
