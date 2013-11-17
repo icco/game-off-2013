@@ -23,6 +23,7 @@
     <script>
       Crafty.init(800, 600, 'game');
 
+      var levels_to_init = [1, 2]
       var levels = {};
 
       Crafty.scene("loading", function() {
@@ -31,26 +32,26 @@
             .attr({ x: 0, y: 300, w: 800, h: 300 })
             .textColor('#FFFFFF')
             .textFont({ size: '40px', weight: 'bold' })
-            .css({
-              "text-align": "center",
-            })
+            .css({ "text-align": "center" })
             .text("Loading...");
 
-        jQuery.get('/maps/level.1.txt', function(data) {
-          levels[1] = [];
-          var lines = $(data.split('\n'));
-          $(lines).each(function(y) {
-            if (levels[1][y] == null) {
-              levels[1][y] = [];
-            }
+        $(levels_to_init).each(function(indx, val) {
+          levels[val] = [];
+          jQuery.get('/maps/level.' + val + '.txt', function(data) {
+            var lines = $(data.split('\n'));
+            $(lines).each(function(y) {
+              if (levels[val][y] == null) {
+                levels[val][y] = [];
+              }
 
-            $(lines[y].split('')).each(function(x) {
-              levels[1][y][x] = lines[y].split('')[x];
+              $(lines[y].split('')).each(function(x) {
+                levels[val][y][x] = lines[y].split('')[x];
+              });
             });
-          });
 
-          Crafty.scene("level_1");
-        }, "text");
+            Crafty.scene("level_1");
+          }, "text");
+        });
       });
 
       // Automatically start the loading scene.
