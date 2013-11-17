@@ -73,32 +73,6 @@ function build_level(lvl) {
   Crafty.scene("level_" + lvl, function() {
     Crafty.background('#444');
 
-    /*
-    // Builds outer walls
-    for (x = 0; x < 800; x++) {
-      Crafty.e("2D, DOM, Wall").attr({ x: x, y: 0 });
-      Crafty.e("2D, DOM, Wall").attr({ x: x, y: 590 });
-    }
-
-    for (y = 0; y < 600; y++) {
-      Crafty.e("2D, DOM, Wall").attr({ x: 0, y: y });
-      Crafty.e("2D, DOM, Wall").attr({ x: 790, y: y });
-    }
-
-    var lines = levels[lvl];
-    $(lines).each(function(y) {
-      $(lines[y]).each(function(x) {
-        if (lines[y][x] == '#') {
-          Crafty.e("2D, DOM, Wall").attr({ x: ((x)*10), y: ((y)*10) });
-        }
-
-        if (lines[y][x] == '!') {
-          Crafty.e("2D, DOM, Goal").attr({ x: ((x)*10), y: ((y)*10) });
-        }
-      });
-    });
-    */
-
     for (x = 0; x < 80; x++) {
       for (y = 0; y < 60; y++) {
         Crafty.e("2D, DOM, Fog").attr({ x: x*10, y: y*10});
