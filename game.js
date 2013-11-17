@@ -75,7 +75,7 @@ function goto_level(lvl) {
       .text("Loading...");
 
     levels[lvl] = [];
-    jQuery.get('/maps/level.' + lvl + '.txt', function(data) {
+    jQuery.get('maps/level.' + lvl + '.txt', function(data) {
       var lines = $(data.split('\n'));
       $(lines).each(function(y) {
         if (levels[lvl][y] == null) {
