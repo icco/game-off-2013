@@ -3,6 +3,7 @@ Crafty.init(800, 600, 'game');
 var levels_to_init = [1, 2]
 var levels = {};
 
+// This defines the basics of a wall.
 Crafty.c("Wall", {
   init: function() {
     this.addComponent('Color');
@@ -11,6 +12,7 @@ Crafty.c("Wall", {
   },
 });
 
+// This defines the basics of the end level area.
 Crafty.c("Goal", {
   init: function() {
     this.addComponent('Color');
@@ -19,7 +21,17 @@ Crafty.c("Goal", {
   },
 });
 
+// This is what the covers most of the map
 Crafty.c("Fog", {
+  init: function() {
+    this.addComponent('Color');
+    this.color('#444');
+    this.attr({ w: 10, h: 10 });
+  },
+});
+
+// Normal Ground
+Crafty.c("Blank", {
   init: function() {
     this.addComponent('Color');
     this.color('#D3D3D3');
@@ -27,6 +39,7 @@ Crafty.c("Fog", {
   },
 });
 
+// This scene is called when the game starts
 Crafty.scene("init", function() {
   Crafty.background('#444');
   Crafty.e("2D, DOM, Text")
@@ -39,6 +52,7 @@ Crafty.scene("init", function() {
   goto_level(levels_to_init[0]);
 });
 
+// This is the final scene
 Crafty.scene("end", function() {
   Crafty.background('#444');
   Crafty.e("2D, DOM, Text")
@@ -49,6 +63,7 @@ Crafty.scene("end", function() {
       .text("The End?");
 });
 
+// This function provides a loading screen as we download the level definition.
 function goto_level(lvl) {
   Crafty.scene("loading_" + lvl, function() {
   Crafty.background('#444');
@@ -78,9 +93,10 @@ function goto_level(lvl) {
   Crafty.scene("loading_" + lvl);
 }
 
+// This draws a level and sets up the player character
 function build_level(lvl) {
   Crafty.scene("level_" + lvl, function() {
-    Crafty.background('#444');
+    Crafty.background('#D3D3D3');
 
     for (x = 0; x < 80; x++) {
       for (y = 0; y < 60; y++) {
@@ -88,12 +104,12 @@ function build_level(lvl) {
       }
     }
 
-    // Dot
-    Crafty.e("2D, DOM, Color, Fourway, Collision")
+    // Dot / User
+    Crafty.e("2D, DOM, Color, Fourway, Collision, WiredHitBox")
       .color('#ccff66')
       .attr({ x: 10, y: 10, w: 10, h: 10 })
       .fourway(4)
-      .collision()
+      .collision(new Crafty.polygon([-40,-40],[-40,40],[40,40],[40,-40]))
       .bind('EnterFrame', function () {
         // This is constantly firing, 24/7
       })
@@ -110,15 +126,13 @@ function build_level(lvl) {
             Crafty.scene("end");
           }
         }
-
-        fog_hits = this.hit('Fog')
-        if (fog_hits) {
-          $(fog_hits).each(function() {
-            el = this.obj
-            el.removeComponent('Fog');
-            el.addComponent(should_be(el._x/10, el._y/10, lvl));
-          });
-        }
+      })
+      .onHit('Fog', function(fog_hits) {
+        $(fog_hits).each(function() {
+          el = this.obj
+          el.removeComponent('Fog');
+          el.addComponent(should_be(el._x/10, el._y/10, lvl));
+        });
       });
   });
 }
@@ -126,6 +140,7 @@ function build_level(lvl) {
 function should_be(x, y, lvl) {
   var lines = levels[lvl];
   var piece = lines[y][x];
+  console.log(x, y, piece);
 
   if (piece == '#') {
     return 'Wall';
