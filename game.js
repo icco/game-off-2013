@@ -17,6 +17,12 @@ Crafty.c("Goal", {
   },
 });
 
+Crafty.c("Fog", {
+  init: function() {
+    this.color('#D3D3D3');
+    this.attr({ w: 10, h: 10 });
+  },
+});
 
 Crafty.scene("loading", function() {
   Crafty.background('#444');
@@ -103,13 +109,23 @@ function build_level(lvl) {
         }
 
         if (this.hit('Goal')) {
-          console.log(jQuery.inArray(lvl+1, levels_to_init));
           if (jQuery.inArray(lvl+1, levels_to_init) >= 0) {
             Crafty.scene("level_" + (lvl + 1));
           } else {
             Crafty.scene("end");
           }
         }
+
+        fog_hits = this.hit('Fog')
+        if (fog_hits) {
+          $(fog_hits).each(function() {
+            should_be(this, lvl);
+          });
+        }
       });
   });
+}
+
+function should_be(elem, lvl) {
+  console.log(elem);
 }
