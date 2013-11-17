@@ -20,7 +20,6 @@
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/crafty/0.5.4/crafty.js"></script>
     <script>
       Crafty.init(800, 600, 'game');
-      Crafty.background('#444');
 
       Crafty.c("Keyboard", {
         isDown: function (key) {
@@ -32,6 +31,8 @@
       });
 
       function gen_map() {
+        Crafty.background('#444');
+
         // Builds outer walls
         for (x = 0; x < 800; x++) {
           Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 0, w: 10, h: 10 }).color('#999');
