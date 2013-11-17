@@ -74,8 +74,15 @@
         var lines = levels[1];
         $(lines).each(function(y) {
           $(lines[y]).each(function(x) {
+            x += 1;
+            y += 1;
+
             if (lines[y][x] == '#') {
               Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: (x*10), y: (y*10), w: 10, h: 10 }).color('#999');
+            }
+
+            if (lines[y][x] == '!') {
+              Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: (x*10), y: (y*10), w: 10, h: 10 }).color('#369');
             }
           });
         });
@@ -90,8 +97,12 @@
             // This is constantly firing, 24/7
           })
           .bind('Moved', function(from) {
-            if(this.hit('Wall')) {
+            if (this.hit('Wall')) {
               this.attr({x: from.x, y: from.y});
+            } 
+
+            if (this.hit('Goal')) {
+              Crafty.scene("level_2");
             }
           });
         });
