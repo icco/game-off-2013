@@ -5,6 +5,7 @@ var levels = {};
 
 Crafty.c("Wall", {
   init: function() {
+    this.addComponent('Color');
     this.color('#999');
     this.attr({ w: 10, h: 10 });
   },
@@ -12,6 +13,7 @@ Crafty.c("Wall", {
 
 Crafty.c("Goal", {
   init: function() {
+    this.addComponent('Color');
     this.color('#963');
     this.attr({ w: 10, h: 10 });
   },
@@ -19,6 +21,7 @@ Crafty.c("Goal", {
 
 Crafty.c("Fog", {
   init: function() {
+    this.addComponent('Color');
     this.color('#D3D3D3');
     this.attr({ w: 10, h: 10 });
   },
@@ -26,7 +29,7 @@ Crafty.c("Fog", {
 
 Crafty.scene("loading", function() {
   Crafty.background('#444');
-  Crafty.e("2D, Color, DOM, Text")
+  Crafty.e("2D, DOM, Text")
       .attr({ x: 0, y: 300, w: 800, h: 300 })
       .textColor('#FFFFFF')
       .textFont({ size: '40px', weight: 'bold' })
@@ -55,7 +58,7 @@ Crafty.scene("loading", function() {
 
 Crafty.scene("end", function() {
   Crafty.background('#444');
-  Crafty.e("2D, Color, DOM, Text")
+  Crafty.e("2D, DOM, Text")
       .attr({ x: 0, y: 300, w: 800, h: 300 })
       .textColor('#FFFFFF')
       .textFont({ size: '40px', weight: 'bold' })
@@ -70,29 +73,37 @@ function build_level(lvl) {
   Crafty.scene("level_" + lvl, function() {
     Crafty.background('#444');
 
+    /*
     // Builds outer walls
     for (x = 0; x < 800; x++) {
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 0 });
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 590 });
+      Crafty.e("2D, DOM, Wall").attr({ x: x, y: 0 });
+      Crafty.e("2D, DOM, Wall").attr({ x: x, y: 590 });
     }
 
     for (y = 0; y < 600; y++) {
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 0, y: y });
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 790, y: y });
+      Crafty.e("2D, DOM, Wall").attr({ x: 0, y: y });
+      Crafty.e("2D, DOM, Wall").attr({ x: 790, y: y });
     }
 
     var lines = levels[lvl];
     $(lines).each(function(y) {
       $(lines[y]).each(function(x) {
         if (lines[y][x] == '#') {
-          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: ((x)*10), y: ((y)*10) });
+          Crafty.e("2D, DOM, Wall").attr({ x: ((x)*10), y: ((y)*10) });
         }
 
         if (lines[y][x] == '!') {
-          Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: ((x)*10), y: ((y)*10) });
+          Crafty.e("2D, DOM, Goal").attr({ x: ((x)*10), y: ((y)*10) });
         }
       });
     });
+    */
+
+    for (x = 0; x < 80; x++) {
+      for (y = 0; y < 60; y++) {
+        Crafty.e("2D, DOM, Fog").attr({ x: x*10, y: y*10});
+      }
+    }
 
     // Dot
     Crafty.e("2D, DOM, Color, Fourway, Collision")
@@ -119,13 +130,29 @@ function build_level(lvl) {
         fog_hits = this.hit('Fog')
         if (fog_hits) {
           $(fog_hits).each(function() {
-            should_be(this, lvl);
+            el = this.obj
+            el.removeComponent('Fog');
+            el.addComponent(should_be(el._x/10, el._y/10, lvl));
           });
         }
       });
   });
 }
 
-function should_be(elem, lvl) {
-  console.log(elem);
+function should_be(x, y, lvl) {
+  var lines = levels[lvl];
+  var piece = lines[y][x];
+  console.log(x, y, piece);
+
+  if (piece == '#') {
+    return 'Wall';
+  }
+
+  if (piece == '!') {
+    return 'Goal';
+  }
+
+  if (piece == '.') {
+    return 'Blank';
+  }
 }
