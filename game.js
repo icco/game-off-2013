@@ -1,6 +1,9 @@
 Crafty.init(800, 600, 'game');
 
+// A list of level ids to play in order.
 var levels_to_init = [1, 2]
+
+// Datastore for levels
 var levels = {};
 
 // This defines the basics of a wall.
