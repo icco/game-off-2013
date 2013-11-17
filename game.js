@@ -3,6 +3,21 @@ Crafty.init(800, 600, 'game');
 var levels_to_init = [1, 2]
 var levels = {};
 
+Crafty.c("Wall", {
+  init: function() {
+    this.color('#999');
+    this.attr({ w: 10, h: 10 });
+  },
+});
+
+Crafty.c("Goal", {
+  init: function() {
+    this.color('#963');
+    this.attr({ w: 10, h: 10 });
+  },
+});
+
+
 Crafty.scene("loading", function() {
   Crafty.background('#444');
   Crafty.e("2D, Color, DOM, Text")
@@ -41,24 +56,24 @@ function build_level(lvl) {
 
     // Builds outer walls
     for (x = 0; x < 800; x++) {
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 0, w: 10, h: 10 }).color('#999');
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 590, w: 10, h: 10 }).color('#999');
+      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 0 });
+      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: x, y: 590 });
     }
 
     for (y = 0; y < 600; y++) {
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 0, y: y, w: 10, h: 10 }).color('#999');
-      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 790, y: y, w: 10, h: 10 }).color('#999');
+      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 0, y: y });
+      Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 790, y: y });
     }
 
     var lines = levels[lvl];
     $(lines).each(function(y) {
       $(lines[y]).each(function(x) {
         if (lines[y][x] == '#') {
-          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10), w: 10, h: 10 }).color('#999');
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10) });
         }
 
         if (lines[y][x] == '!') {
-          Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10), w: 10, h: 10 }).color('#369');
+          Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10) });
         }
       });
     });
