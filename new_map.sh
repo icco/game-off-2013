@@ -1,7 +1,7 @@
 #! /bin/bash
 
-for j in $(seq 0 600); do
-  for i in $(seq 0 800); do
+for j in $(seq 1 60); do
+  for i in $(seq 1 80); do
     echo -n '.'
   done
 
