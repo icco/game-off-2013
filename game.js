@@ -123,19 +123,24 @@ function build_level(lvl) {
           }
       })
       .bind('Moved', function(from) {
-        var  box = new Crafty.polygon([-40,-40],[-40,40],[40,40],[40,-40])
+        var hitbox = Crafty.e("2D, DOM, Collision, WiredHitBox")
+            .attr({ w: 50, h: 50, x: from.x, y: from.y })
+            .collision()
+            .onHit('Fog', function(fog_hits) {
+              console.log(this.attr());
+              $(fog_hits).each(function() {
+                el = this.obj
+                el.removeComponent('Fog');
+                el.addComponent(should_be(el._x/10, el._y/10, lvl));
+              });
+            });
+        hitbox.destroy();
+
         // We can't use onHit with wall because we need to stop movement.
         if (this.hit('Wall')) {
           this.attr({x: from.x, y: from.y});
         }
       })
-      .onHit('Fog', function(fog_hits) {
-        $(fog_hits).each(function() {
-          el = this.obj
-          el.removeComponent('Fog');
-          el.addComponent(should_be(el._x/10, el._y/10, lvl));
-        });
-      });
   });
 }
 
