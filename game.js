@@ -109,6 +109,7 @@ function build_level(lvl) {
       .color('#ccff66')
       .attr({ x: 10, y: 10, w: 10, h: 10 })
       .fourway(4)
+      // Collision for pologons larger than element are broken: https://github.com/craftyjs/Crafty/issues/412
       .collision(new Crafty.polygon([-40,-40],[-40,40],[40,40],[40,-40]))
       .bind('EnterFrame', function () {
         // This is constantly firing, 24/7
