@@ -81,5 +81,5 @@ function build_level(lvl) {
           Crafty.scene("level_" + (lvl + 1));
         }
       });
-    });
-  }
+  });
+}
