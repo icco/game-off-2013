@@ -27,7 +27,7 @@ Crafty.c("Fog", {
   },
 });
 
-Crafty.scene("loading", function() {
+Crafty.scene("init", function() {
   Crafty.background('#444');
   Crafty.e("2D, DOM, Text")
       .attr({ x: 0, y: 300, w: 800, h: 300 })
@@ -36,25 +36,7 @@ Crafty.scene("loading", function() {
       .css({ "text-align": "center" })
       .text("Loading...");
 
-  $(levels_to_init).each(function(indx, val) {
-    levels[val] = [];
-    jQuery.get('/maps/level.' + val + '.txt', function(data) {
-      var lines = $(data.split('\n'));
-      $(lines).each(function(y) {
-        if (levels[val][y] == null) {
-          levels[val][y] = [];
-        }
-
-        $(lines[y].split('')).each(function(x) {
-          levels[val][y][x] = lines[y].split('')[x];
-        });
-      });
-    }, "text").always(function() {
-      if (indx == 0) {
-        goto_level(val);
-      }
-    });;
-  });
+  goto_level(levels_to_init[0]);
 });
 
 Crafty.scene("end", function() {
@@ -67,12 +49,33 @@ Crafty.scene("end", function() {
       .text("The End?");
 });
 
-// Automatically start the loading scene.
-Crafty.scene("loading");
-
 function goto_level(lvl) {
-  build_level(lvl);
-  Crafty.scene("level_" + lvl);
+  Crafty.scene("loading_" + lvl, function() {
+  Crafty.background('#444');
+  Crafty.e("2D, DOM, Text")
+      .attr({ x: 0, y: 300, w: 800, h: 300 })
+      .textColor('#FFFFFF')
+      .textFont({ size: '40px', weight: 'bold' })
+      .css({ "text-align": "center" })
+      .text("Loading...");
+
+    levels[lvl] = [];
+    jQuery.get('/maps/level.' + lvl + '.txt', function(data) {
+      var lines = $(data.split('\n'));
+      $(lines).each(function(y) {
+        if (levels[lvl][y] == null) {
+          levels[lvl][y] = [];
+        }
+
+        $(lines[y].split('')).each(function(x) {
+          levels[lvl][y][x] = lines[y].split('')[x];
+        });
+      });
+      build_level(lvl);
+      Crafty.scene("level_" + lvl);
+    }, "text");
+  });
+  Crafty.scene("loading_" + lvl);
 }
 
 function build_level(lvl) {
@@ -123,7 +126,6 @@ function build_level(lvl) {
 function should_be(x, y, lvl) {
   var lines = levels[lvl];
   var piece = lines[y][x];
-  console.log(x, y, piece);
 
   if (piece == '#') {
     return 'Wall';
@@ -137,3 +139,6 @@ function should_be(x, y, lvl) {
     return 'Blank';
   }
 }
+
+// Automatically start the loading scene.
+Crafty.scene("init");
