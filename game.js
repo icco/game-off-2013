@@ -49,10 +49,11 @@ Crafty.scene("loading", function() {
           levels[val][y][x] = lines[y].split('')[x];
         });
       });
-
-      build_level(val);
-      Crafty.scene("level_1");
-    }, "text");
+    }, "text").always(function() {
+      if (indx == 0) {
+        goto_level(val);
+      }
+    });;
   });
 });
 
@@ -68,6 +69,11 @@ Crafty.scene("end", function() {
 
 // Automatically start the loading scene.
 Crafty.scene("loading");
+
+function goto_level(lvl) {
+  build_level(lvl);
+  Crafty.scene("level_" + lvl);
+}
 
 function build_level(lvl) {
   Crafty.scene("level_" + lvl, function() {
@@ -94,8 +100,9 @@ function build_level(lvl) {
         }
 
         if (this.hit('Goal')) {
-          if (jQuery.inArray(lvl+1, levels_to_init) >= 0) {
-            Crafty.scene("level_" + (lvl + 1));
+          var index = jQuery.inArray(lvl, levels_to_init);
+          if (index >= 0) {
+            goto_level(levels_to_init[index + 1]);
           } else {
             Crafty.scene("end");
           }
