@@ -47,6 +47,16 @@ Crafty.scene("loading", function() {
   });
 });
 
+Crafty.scene("end", function() {
+  Crafty.background('#444');
+  Crafty.e("2D, Color, DOM, Text")
+      .attr({ x: 0, y: 300, w: 800, h: 300 })
+      .textColor('#FFFFFF')
+      .textFont({ size: '40px', weight: 'bold' })
+      .css({ "text-align": "center" })
+      .text("The End?");
+});
+
 // Automatically start the loading scene.
 Crafty.scene("loading");
 
@@ -69,11 +79,11 @@ function build_level(lvl) {
     $(lines).each(function(y) {
       $(lines[y]).each(function(x) {
         if (lines[y][x] == '#') {
-          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10) });
+          Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: ((x)*10), y: ((y)*10) });
         }
 
         if (lines[y][x] == '!') {
-          Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: ((x+1)*10), y: ((y+1)*10) });
+          Crafty.e("2D, Color, DOM, Goal, Solid").attr({ x: ((x)*10), y: ((y)*10) });
         }
       });
     });
@@ -93,7 +103,12 @@ function build_level(lvl) {
         }
 
         if (this.hit('Goal')) {
-          Crafty.scene("level_" + (lvl + 1));
+          console.log(jQuery.inArray(lvl+1, levels_to_init));
+          if (jQuery.inArray(lvl+1, levels_to_init) >= 0) {
+            Crafty.scene("level_" + (lvl + 1));
+          } else {
+            Crafty.scene("end");
+          }
         }
       });
   });
