@@ -23,16 +23,40 @@
     <script>
       Crafty.init(800, 600, 'game');
 
-      Crafty.c("Keyboard", {
-        isDown: function (key) {
-          if (typeof key === "string") {
-            key = Crafty.keys[key];
-          }
-          return !!Crafty.keydown[key];
-        }
+      var levels = {};
+
+      Crafty.scene("loading", function() {
+        Crafty.background('#444');
+        Crafty.e("2D, Color, DOM, Text")
+            .attr({ x: 0, y: 300, w: 800, h: 300 })
+            .textColor('#FFFFFF')
+            .textFont({ size: '40px', weight: 'bold' })
+            .css({
+              "text-align": "center",
+            })
+            .text("Loading...");
+
+        jQuery.get('/maps/level.1.txt', function(data) {
+          levels[1] = [];
+          var lines = $(data.split('\n'));
+          $(lines).each(function(y) {
+            if (levels[1][y] == null) {
+              levels[1][y] = [];
+            }
+
+            $(lines[y].split('')).each(function(x) {
+              levels[1][y][x] = lines[y].split('')[x];
+            });
+          });
+
+          Crafty.scene("level_1");
+        }, "text");
       });
 
-      function gen_map() {
+      // Automatically start the loading scene.
+      Crafty.scene("loading");
+
+      Crafty.scene("level_1", function() {
         Crafty.background('#444');
 
         // Builds outer walls
@@ -46,33 +70,29 @@
           Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: 790, y: y, w: 10, h: 10 }).color('#999');
         }
 
-        jQuery.get('/maps/level.1.txt', function(data) {
-          var lines = $(data.split('\n'));
-          $(lines).each(function(y) {
-            $(lines[y].split('')).each(function(x) {
-              if (lines[y].split('')[x] == '#') {
-                Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: (x*10), y: (y*10), w: 10, h: 10 }).color('#999');
-              }
-            });
+        var lines = levels[1];
+        $(lines).each(function(y) {
+          $(lines[y]).each(function(x) {
+            if (lines[y][x] == '#') {
+              Crafty.e("2D, Color, DOM, Wall, Solid").attr({ x: (x*10), y: (y*10), w: 10, h: 10 }).color('#999');
+            }
           });
-        }, "text");
-      }
+        });
 
-      gen_map();
-
-      // Dot
-      Crafty.e("2D, DOM, Color, Fourway, Collision")
-        .color('#ccff66')
-        .attr({ x: 10, y: 10, w: 10, h: 10 })
-        .fourway(4)
-        .collision()
-        .bind('EnterFrame', function () {
-          // This is constantly firing, 24/7
-        })
-        .bind('Moved', function(from) {
-          if(this.hit('Wall')) {
-            this.attr({x: from.x, y: from.y});
-          }
+        // Dot
+        Crafty.e("2D, DOM, Color, Fourway, Collision")
+          .color('#ccff66')
+          .attr({ x: 10, y: 10, w: 10, h: 10 })
+          .fourway(4)
+          .collision()
+          .bind('EnterFrame', function () {
+            // This is constantly firing, 24/7
+          })
+          .bind('Moved', function(from) {
+            if(this.hit('Wall')) {
+              this.attr({x: from.x, y: from.y});
+            }
+          });
         });
     </script>
   </body>
