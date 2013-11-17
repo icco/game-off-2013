@@ -110,22 +110,23 @@ function build_level(lvl) {
       .attr({ x: 10, y: 10, w: 10, h: 10 })
       .fourway(4)
       // Collision for pologons larger than element are broken: https://github.com/craftyjs/Crafty/issues/412
-      .collision(new Crafty.polygon([-40,-40],[-40,40],[40,40],[40,-40]))
+      .collision()
       .bind('EnterFrame', function () {
         // This is constantly firing, 24/7
       })
-      .bind('Moved', function(from) {
-        if (this.hit('Wall')) {
-          this.attr({x: from.x, y: from.y});
-        }
-
-        if (this.hit('Goal')) {
+      .onHit('Goal', function(hits) {
           var index = jQuery.inArray(lvl, levels_to_init);
           if (index >= 0) {
             goto_level(levels_to_init[index + 1]);
           } else {
             Crafty.scene("end");
           }
+      })
+      .bind('Moved', function(from) {
+        var  box = new Crafty.polygon([-40,-40],[-40,40],[40,40],[40,-40])
+        // We can't use onHit with wall because we need to stop movement.
+        if (this.hit('Wall')) {
+          this.attr({x: from.x, y: from.y});
         }
       })
       .onHit('Fog', function(fog_hits) {
