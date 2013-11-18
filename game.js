@@ -107,12 +107,25 @@ function build_level(lvl) {
       }
     }
 
+    // Hitbox
+    box = Crafty.e("2D, DOM, Collision")
+        .attr({ x: -15, y: -15, w: 60, h: 60 })
+        .collision()
+        .onHit('Fog', function(fog_hits) {
+          $(fog_hits).each(function() {
+            el = this.obj
+            el.removeComponent('Fog');
+            el.addComponent(should_be(el._x/10, el._y/10, lvl));
+          });
+        });
+
     // Dot / User
     Crafty.e("2D, DOM, Color, Fourway, Collision")
       .color('#ccff66')
       .attr({ x: 10, y: 10, w: 10, h: 10 })
       .fourway(4)
-      // Collision for pologons larger than element are broken: https://github.com/craftyjs/Crafty/issues/412
+      // Collision for pologons larger than element are broken.
+      // https://github.com/craftyjs/Crafty/issues/412
       .collision()
       .bind('EnterFrame', function () {
         // This is constantly firing, 24/7
@@ -131,13 +144,7 @@ function build_level(lvl) {
           this.attr({x: from.x, y: from.y});
         }
       })
-      .onHit('Fog', function(fog_hits) {
-        $(fog_hits).each(function() {
-          el = this.obj
-          el.removeComponent('Fog');
-          el.addComponent(should_be(el._x/10, el._y/10, lvl));
-        });
-      });
+      .attach(box);
   });
 }
 
