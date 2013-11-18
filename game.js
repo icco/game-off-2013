@@ -132,7 +132,9 @@ function build_level(lvl) {
       })
       .onHit('Goal', function(hits) {
           var index = jQuery.inArray(lvl, levels_to_init);
-          if (index >= 0) {
+          var new_level = levels_to_init[index + 1]
+          // console.log("Going to level: " + new_level + ". Index #" + (index+1));
+          if (new_level) {
             goto_level(levels_to_init[index + 1]);
           } else {
             Crafty.scene("end");
@@ -151,7 +153,7 @@ function build_level(lvl) {
 function should_be(x, y, lvl) {
   var lines = levels[lvl];
   var piece = lines[y][x];
-  console.log(x, y, piece);
+  // console.log(x, y, piece);
 
   if (piece == '#') {
     return 'Wall';
