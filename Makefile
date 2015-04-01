@@ -1,9 +1,9 @@
 SHELL=/bin/bash
 TEMPFILE := $(shell mktemp -t level)
 
-all: server
+all: local
 
-server:
+local:
 	python -m SimpleHTTPServer
 
 new_map:
